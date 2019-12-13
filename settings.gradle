@@ -1,0 +1,5 @@
+rootProject.name = 'common-uploader'
+include 'common-uploader-api'
+include 'common-uploader-qiniu'
+include 'common-uploader-upyun'
+

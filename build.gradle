@@ -1,0 +1,64 @@
+plugins {
+    id 'idea'
+    id 'java'
+}
+
+allprojects {
+//    如果group/version属性,没有在allprojects/subprojects块中定义,并且各个子module中的build.gradle也没有定义group/version属性,
+//    那么使用gradlew clean install 将不会把生成的依赖安装到maven仓库
+    group 'cn.kanyun'
+    version '1.0-SNAPSHOT'
+    sourceCompatibility = 1.8
+}
+
+
+subprojects {
+
+    apply plugin: 'java'
+    apply plugin: 'maven'
+    apply plugin: 'maven-publish'
+
+
+    repositories {
+        mavenLocal()
+        mavenCentral()
+    }
+
+    tasks.withType(JavaCompile) {
+        options.encoding = "UTF-8"
+    }
+
+    dependencies {
+        testCompile(group: 'junit', name: 'junit', version: '4.12')
+        
+        implementation group: 'com.google.guava', name: 'guava', version: '28.1-jre'
+
+        
+        compileOnly group: 'org.projectlombok', name: 'lombok', version: '1.18.10'
+        annotationProcessor group: 'org.projectlombok', name: 'lombok', version: '1.18.10'
+
+        compileOnly group: 'org.slf4j', name: 'slf4j-api', version: '1.7.29'
+        testCompile group: 'ch.qos.logback', name: 'logback-classic', version: '1.2.3'
+        compileOnly group: 'ch.qos.logback', name: 'logback-core', version: '1.2.3'
+
+    }
+
+
+}
+
+project(':common-uploader-qiniu') {
+    description = '七牛云桥接器'
+    dependencies {
+        compileOnly project(':common-uploader-api')
+    }
+}
+
+project(':common-uploader-upyun') {
+    description = '又拍云桥接器'
+    dependencies {
+        compileOnly project(':common-uploader-api')
+    }
+}
+
+
+

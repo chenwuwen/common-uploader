@@ -1,0 +1,4 @@
+
+dependencies {
+    compileOnly group: 'com.upyun', name: 'java-sdk', version: '4.1.3'
+}

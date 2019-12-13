@@ -1,0 +1,68 @@
+
+jar {
+    print("打包时排除StaticUploaderBinder类,这个类需要桥接器去实现,需要注意的是类的全限定名必须为 cn.kanyun.upload.StaticUploaderBinder")
+    exclude("cn/kanyun/upload/impl/StaticUploaderBinder.class")
+//    impl包下的其他类,主要是用来配合StaticUploaderBinder类做测试使用的,因此也不会将其进行打包
+    exclude("cn/kanyun/upload/impl/*.class")
+}
+
+
+
+/**
+ * 打包源码
+ */
+task sourcesJar (type:Jar) {
+//    classifier详解：https://blog.csdn.net/u014756827/article/details/53667278
+//    由于classifier在gradle中被标记为过时,因此使用archiveClassifier代替
+//    classifier = 'sources'
+    archiveClassifier = 'sources'
+//    打源码包排除java文件会报错找不到依赖
+//    from sourceSets.main.java.exclude("cn/kanyun/upload/impl/*.java")
+
+}
+
+//设置任务依赖关系,打jar包的同时,打源码包
+jar.dependsOn(sourcesJar)
+
+/**
+ * 默认使用gradlew clean install命令时,仅仅只是安装编译好的包,源码包
+ * 是不会安装到maven仓库的,添加此配置可以将源码包打入到本地maven仓库
+ * doc包也可以如法炮制
+ */
+artifacts {
+    archives sourcesJar
+}
+
+sourceSets {
+    main {
+        java {
+//            这样也可以排除类,但是编译就不能通过了,会提示类找不到
+//            exclude 'cn/kanyun/cn.kanyun.upload/impl/StaticUploaderBinder.java'
+        }
+    }
+}
+
+dependencies {
+}
+
+publishing {
+    publications {
+        myPublication(MavenPublication) {
+            from components.java
+            artifactId "$project.name"
+            version "$version"
+            artifact(sourcesJar) {
+                classifier = 'sources'
+            }
+        }
+    }
+    repositories {
+        maven {
+            url "https://oss.sonatype.org/content/repositories/snapshots"
+            credentials {
+                username = 'kanyun'
+                password = 'Chenwuwen@@321'
+            }
+        }
+    }
+}
