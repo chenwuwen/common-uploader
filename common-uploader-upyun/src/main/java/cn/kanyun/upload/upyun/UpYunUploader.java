@@ -32,7 +32,7 @@ public class UpYunUploader implements Uploader {
     public Map push(String sourcePath, String targetPath) {
         Map map = new HashMap();
         try {
-            boolean flag = upyun.writeFile(sourcePath, targetPath);
+            boolean flag = invokePush(sourcePath, targetPath);
             if (flag) {
                 map.put("key", targetPath);
             } else {
@@ -52,7 +52,7 @@ public class UpYunUploader implements Uploader {
     public Map push(String sourcePath, String targetPath, PushCallBack callBack) {
         Map map = new HashMap();
         try {
-            boolean flag = upyun.writeFile(sourcePath, targetPath);
+            boolean flag = invokePush(sourcePath, targetPath);
             if (flag) {
                 map.put("key", targetPath);
             } else {
@@ -68,5 +68,9 @@ public class UpYunUploader implements Uploader {
             map.put("key", null);
         }
         return map;
+    }
+
+    private boolean invokePush(String sourcePath, String targetPath) throws IOException, UpException {
+        return upyun.writeFile(sourcePath, targetPath);
     }
 }

@@ -35,9 +35,7 @@ public class QiniuUploader implements Uploader {
     public Map push(String sourcePath, String targetPath) {
         Map ret = new HashMap();
         try {
-            Response response = uploadManager.put(sourcePath, targetPath, upToken);
-            //解析上传成功的结果
-            DefaultPutRet putRet = response.jsonToObject(DefaultPutRet.class);
+            DefaultPutRet putRet = invokePush(sourcePath, targetPath);
             ret.put("key", putRet.key);
             ret.put("hash", putRet.hash);
         } catch (QiniuException e) {
@@ -52,9 +50,7 @@ public class QiniuUploader implements Uploader {
     public Map push(String sourcePath, String targetPath, PushCallBack callBack) {
         Map ret = new HashMap();
         try {
-            Response response = uploadManager.put(sourcePath, targetPath, upToken);
-            //解析上传成功的结果
-            DefaultPutRet putRet = response.jsonToObject(DefaultPutRet.class);
+            DefaultPutRet putRet = invokePush(sourcePath, targetPath);
             ret.put("key", putRet.key);
             ret.put("hash", putRet.hash);
             callBack.onSuccess(sourcePath, targetPath);
@@ -63,5 +59,13 @@ public class QiniuUploader implements Uploader {
             ret.put("key", null);
         }
         return ret;
+    }
+
+
+    public DefaultPutRet invokePush(String sourcePath, String targetPath) throws QiniuException {
+        Response response = uploadManager.put(sourcePath, targetPath, upToken);
+        //解析上传成功的结果
+        DefaultPutRet putRet = response.jsonToObject(DefaultPutRet.class);
+        return putRet;
     }
 }
